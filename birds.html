@@ -1,0 +1,125 @@
+<html>
+    <head>
+        <title>Enter the Wei</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+        <script src="js/script.js"></script>
+        
+    </head>
+    <script>
+    </script>
+    <body>
+        <div id="bg">
+        </div>
+        <canvas id="main" width="100%" height="100%"></canvas>
+    <script>
+            $(document).ready(function() {
+                $('#head').hover(function() {
+                    console.log('hover in');
+                    $('#bottom').animate({top: '210px'}, 150);
+                    $('#enter').slideDown(150);
+                    $('#bg').animate({opacity: 1}, 150);
+                },
+                function() {
+                    console.log('hover out');
+                    $('#bottom').animate({top: '190px'}, 150);
+                    $('#enter').slideUp(150);
+                    $('#bg').animate({opacity: 0}, 150);
+                })
+            });
+            var loaded = false;
+            var MAX_SWANG = 100;
+            var swangs = [];
+            var swangimg = [];
+            var files = ['img/s1.png',
+                        'img/s2.png',
+                        'img/s3.png',
+                        'img/s4.png',
+                        'img/s5.png',
+                        'img/s6.png',
+                        'img/s7.png',
+                        'img/s8.png',
+                        'img/s9.png'];
+            
+            function loadImages() {
+                for (var i = 0; i < 9; i++) {
+                    var img = new Image();
+                    img.src = files[i];
+                    swangimg.push(img);
+                    if (i == 8) {
+                        loaded = true;
+                        console.log('all images loaded');
+                        console.log(swangimg);
+                    }
+                }
+            }
+            
+            function newSwang() {
+                var initY = Math.floor(Math.random() * ctx.canvas.height);
+                var initX = -200;
+                var initVelX = Math.floor((Math.random() * 5) + 3);
+                var frame = 0;
+                return ({X: initX, Y: initY, velX: initVelX, f: frame});
+            }
+            function update() {
+                if (swangs.length < MAX_SWANG) {
+                    swangs.push(newSwang());
+                }
+                for (var i = 0; i < swangs.length; i++) {
+                    if (swangs[i].X > width) {
+                        swangs[i] = newSwang();
+                    }
+                    swangs[i].X += swangs[i].velX;
+                }
+            }
+            function draw() {
+                ctx.clearRect(0,0,ctx.canvas.width, ctx.canvas.height);
+                for (var i = 0; i < swangs.length; i++) {
+                    var index = swangs[i].f;
+                    ctx.drawImage(swangimg[swangs[i].f], swangs[i].X, swangs[i].Y);
+                }
+            }
+            var c = document.getElementById("main");
+            var ctx = c.getContext("2d");
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+
+            ctx.canvas.width = width;
+            ctx.canvas.height = height;
+            loadImages();
+            console.log(swangimg.length);
+            var FPS = 30;
+
+            setInterval(function() {
+                update();
+                if (loaded) {
+                    draw();
+                }
+            }, 1000/FPS);
+
+            setInterval(function() {
+                for (var i = 0; i < swangs.length; i++) {
+                    swangs[i].f++;
+
+                    if (swangs[i].f == 9) {
+                        swangs[i].f = 0;
+                    }
+                }
+            }, 1000/4);
+
+        </script>
+        
+        <div id="head">
+            <div id="top">
+                <img src="img/wei_top.png">
+            </div>
+            <div id="enter">
+                <h3>SHOW ME THE WEI</h3>
+            </div>
+            <div id="bottom">
+                <img src="img/wei_bottom.png">
+            </div>
+            
+        </div>
+    </body>
+</html>
